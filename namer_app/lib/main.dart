@@ -41,7 +41,6 @@ class MyAppState extends ChangeNotifier {
   late List<WordPair> favorites;
   var initialized = false;
 
-  // Convertir les favoris en JSON
   static String _wordPairsToJson(List<WordPair> favorites) {
     return json.encode(
       favorites
@@ -50,13 +49,11 @@ class MyAppState extends ChangeNotifier {
     );
   }
 
-  // Convertir le JSON en une liste de WordPair
   static List<WordPair> _wordPairsFromJson(String jsonStr) {
     final List<dynamic> list = json.decode(jsonStr);
     return list.map((item) => WordPair(item['first'], item['second'])).toList();
   }
 
-  // Initialisation des favoris
   Future<void> init() async {
     if (initialized) {
       return;
@@ -74,7 +71,6 @@ class MyAppState extends ChangeNotifier {
     initialized = true;
   }
 
-  // Sauvegarder les favoris dans SharedPreferences
   Future<bool> _saveToStorage() async {
     var storage = await SharedPreferences.getInstance();
     return await storage.setString('favorites', _wordPairsToJson(favorites));
@@ -91,13 +87,13 @@ class MyAppState extends ChangeNotifier {
     } else {
       favorites.add(current);
     }
-    _saveToStorage(); // Sauvegarde après modification
+    _saveToStorage();
     notifyListeners();
   }
 
   void removeFavorite(WordPair pair) {
     favorites.remove(pair);
-    _saveToStorage(); // Sauvegarde après suppression
+    _saveToStorage();
     notifyListeners();
   }
 }
@@ -164,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     var appState = context.read<MyAppState>();
-    initializer = appState.init(); // Initialisation des favoris au démarrage
+    initializer = appState.init();
   }
 
   @override
@@ -175,13 +171,11 @@ class _MyHomePageState extends State<MyHomePage> {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
             body: Center(
-              child:
-                  CircularProgressIndicator(), // Afficher un indicateur de chargement
+              child: CircularProgressIndicator(),
             ),
           );
         }
 
-        // Lorsque l'initialisation est terminée, afficher la page en fonction de l'index sélectionné
         return LayoutBuilder(
           builder: (context, constraints) {
             if (constraints.maxWidth > 600) {
